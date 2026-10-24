@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+assert.ok(script,'missing inline script');
+new vm.Script(script,{filename:'angel-inline.js'});
+for(const label of ['思维导图','摸底测试','动态图实验','计算与解答','学习记录'])assert.ok(html.includes(label),`missing ${label}`);
+assert.ok(html.includes('localStorage'),'missing local persistence');
+console.log('PASS: script parses, core modules present, local persistence present');
